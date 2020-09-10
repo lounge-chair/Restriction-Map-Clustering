@@ -102,6 +102,8 @@ int main(int argc, char *argv[]){
 
         getline(valfile,str);
 
+        stringstream ss12(str);
+        
         string dummy;
         float f1;
 
