@@ -1,0 +1,1 @@
+for /L %%i in (1,1,15) do ((for /L %%j in (5000,5000,70000) do echo dVal = %%i ; least in common = %%j & analyse_clustering ecoli_cov300.val all_info 6merinfo.txt model_predictions.csv %%i%% %%j) >> results.txt) 

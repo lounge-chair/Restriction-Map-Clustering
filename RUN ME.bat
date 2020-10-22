@@ -1,1 +1,0 @@
-analyse_clustering ecoli_cov300.val all_info 6merinfo.txt model_predictions.csv

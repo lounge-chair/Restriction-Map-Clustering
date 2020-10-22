@@ -76,7 +76,10 @@ int main(int argc, char *argv[]){
     // precision -- when a certain call is made, check span to ensure that this call is reasonable --- use smaller overlaps consititues true overlap
     // recall -- of all the right calls you could have made, how many did you make? --- use bigger overlaps constitutes true overlap
 	
+    
     ifstream infofile(argv[2]);
+
+    ofstream res("results.csv", ios::app);
 
     vector<int> orientation;
     vector<int> starts,ends;
@@ -232,9 +235,15 @@ int main(int argc, char *argv[]){
 
     vector< vector <int> > precision_true_relations;
     vector< vector <int> > recall_true_relations;
+    vector< vector <int> > precision_false_relations;
+    vector< vector <int> > recall_false_relations;
 
     precision_true_relations.resize(rmap_to_cluster.size(),temp);
     recall_true_relations.resize(rmap_to_cluster.size(),temp);
+    precision_false_relations.resize(rmap_to_cluster.size(),temp);
+    recall_false_relations.resize(rmap_to_cluster.size(),temp);
+    int dVal = atoi(argv[5]);
+    int LIC = atoi(argv[6]);
 
     for(int i=0;i<rmap_to_cluster.size();i++){
 
@@ -246,23 +255,24 @@ int main(int argc, char *argv[]){
             if(j==i || rmap_to_cluster[j].size()==0 || orientation[i]!=orientation[j])
                 continue;
 
-            if(overlap(starts[i],ends[i],starts[j],ends[j])>10000)
-                precision_true_relations[i].push_back(j);
+            if(overlap(starts[i],ends[i],starts[j],ends[j])>LIC) //two Rmaps are being called as related, but dont even have 10000 bp overlap? thats a wrong call/false positive
+                precision_true_relations[i].push_back(j);          //change to 5000 to reduce strict-ness
+            else {
+                precision_false_relations[i].push_back(j);
+            }
 
-            if(overlap(starts[i],ends[i],starts[j],ends[j])>70000)
+            if(overlap(starts[i],ends[i],starts[j],ends[j])>LIC) //two Rmaps have overlap of 70000+ base pairs, should be called, if not? that's a wrong call
                 recall_true_relations[i].push_back(j);
-
-
-
+            else {
+                recall_false_relations[i].push_back(j);
+            }
         }
-
     }
 
     ofstream pretrurel("precision_true_relations.txt");
     ofstream rectrurel("recall_true_relations.txt");
-
-
-
+    ofstream prefalrel("precision_false_relations.txt");
+    ofstream recfalrel("recall_false_relations.txt");
 
     ofstream rmaprels("Rmap_relations.txt");
 
@@ -270,6 +280,7 @@ int main(int argc, char *argv[]){
 
     vector< vector <int> > found_rels(relation_matrix.size(),temp);
 
+    
 
     for(int i=0;i<rmap_to_cluster.size();i++){
 
@@ -288,7 +299,7 @@ int main(int argc, char *argv[]){
         rmaprels<<i<<" : ";
         for(int j=0;j<relation_matrix[i].size();j++){
 
-            if(relation_matrix[i][j]>10){
+            if(relation_matrix[i][j]>dVal){ //D VALUE PRESENT HERE
                 found_rels[i].push_back(j);
                 rmaprels<<j<<","<<relation_matrix[i][j]<<"\t";
             }
@@ -300,7 +311,6 @@ int main(int argc, char *argv[]){
 
 
     }
-
 
     int correct=0,incorrect=0,totcorrect=0,totfalse=0,recor=0,refal=0;
 
@@ -341,6 +351,8 @@ int main(int argc, char *argv[]){
         }
         rectrurel<<endl;
 
+        
+
         correct=0;incorrect=0;
 
         for(int j=0;j<found_rels[i].size();j++){
@@ -355,10 +367,36 @@ int main(int argc, char *argv[]){
 
     }
 
+    //NEW FALSE RELATIONS CODE////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    for(int i=0;i<precision_false_relations.size();i++){
+        prefalrel<<i<<" : ";
+        //correct=0;incorrect=0;
+
+        vector<int> track2(precision_false_relations.size(),0);
+
+        for(int j=0;j<precision_false_relations[i].size();j++){
+            prefalrel<<precision_false_relations[i][j]<<" ";
+            track2[precision_false_relations[i][j]]++;
+        }
+
+        prefalrel<<endl;
+
+        recfalrel<<i<<" : ";
+
+        track2.resize(precision_false_relations.size(),0);
+
+        for(int j=0;j<recall_false_relations[i].size();j++){
+            recfalrel<<recall_false_relations[i][j]<<" ";
+            track2[recall_false_relations[i][j]]++;
+        }
+        recfalrel<<endl;
+    }
+    /////////////////////////////////
 
     cout<<"Precision: "<<(float)totcorrect*100/(totcorrect+totfalse)<<endl;
     cout<<"Recall: "<<(float)recor*100/(recor+refal)<<endl;
 
-
+    
 
 }

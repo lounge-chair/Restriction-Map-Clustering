@@ -1,1 +1,5 @@
 .vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+csvtest.cpp
+csvtest.exe
