@@ -1,0 +1,1 @@
+(analyse_clustering ecoli_cov300.val all_info kmerinfo/6merinfo.txt model_predictions/6new_model_predictions_1000.csv)

@@ -3,3 +3,5 @@
 .vscode/tasks.json
 csvtest.cpp
 csvtest.exe
+batch notes.txt
+test/results.csv
