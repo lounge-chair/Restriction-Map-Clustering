@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     
 
     ifstream infofile(argv[2]);
-    string respath = "clustering_results";
+    string respath = "results";
 
     string kmer_str = argv[3];
     string model_str = argv[4];
@@ -110,7 +110,10 @@ int main(int argc, char *argv[])
     }
     else if((model_str == "model_predictions/4new_model_predictions_1000.csv") || (model_str == "model_predictions/5new_model_predictions_1000.csv") || (model_str == "model_predictions/6new_model_predictions_1000.csv")) {
         respath += "/clustering_1000"; 
-    }     
+    }  
+    else if((model_str == "comet_predictions/4comet_prediction.csv") || (model_str == "comet_predictions/5comet_prediction.csv") || (model_str == "comet_predictions/6comet_prediction.csv")) {
+        respath += "/comet"; 
+    }   
     else {
         cout << "Unknown model_predictions filename! Exiting." << endl;
         return(1);

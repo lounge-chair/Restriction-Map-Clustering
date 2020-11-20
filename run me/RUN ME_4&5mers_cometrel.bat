@@ -1,0 +1,1 @@
+(comet_relations all_4mers.txt 4comet_prediction.csv) & (comet_relations all_5mers.txt 5comet_prediction.csv)

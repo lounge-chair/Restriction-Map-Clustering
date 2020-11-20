@@ -1,0 +1,1 @@
+(analyse_clustering ecoli_cov300.val all_info kmerinfo/4merinfo.txt comet_predictions/4comet_prediction.csv) & (analyse_clustering ecoli_cov300.val all_info kmerinfo/5merinfo.txt comet_predictions/5comet_prediction.csv)

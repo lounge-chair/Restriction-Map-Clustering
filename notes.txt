@@ -1,0 +1,76 @@
+///////////////////////////////////////////
+parallization implicit
+///////////////////////////////////////////
+#!/bin/bash
+#SBATCH --qos=boucher
+##SBATCH --partition=hpg2-compute
+#SBATCH --job-name=human_80x_defaulterror			    //job name
+##SBATCH --mail-user=kingdgp@ufl.edu				    //email id so you get email when job begins and ends
+#SBATCH --mail-type=ALL						            //dont change
+#SBATCH --output varsim_diploid_default_80x.out			//log file 
+#SBATCH --nodes=1						//dont change
+#SBATCH --ntasks=1						//dont change	
+#SBATCH --cpus-per-task=20				//parallelization (up to 60, though leave as 1)
+#SBATCH --mem=50gb						//upper limit of memory (20 gb on normal cluster
+#SBATCH --time=15-00:00:00				//upper limit of time--15 means 15 days here, up to 30 days 	
+
+/usr/bin/time -v python ../../../../omsim/src/omsim/__main__.py example.xml
+
+///////////////////////////////////////////
+parallization explicit
+///////////////////////////////////////////
+#!/bin/bash
+#SBATCH --qos=boucher-b			    //-b designates burst cluster
+#SBATCH --partition=hpg2-compute
+#SBATCH --job-name=varauto
+##SBATCH --mail-user=kingdgp@ufl.edu
+#SBATCH --mail-type=ALL
+#SBATCH --output varauto-%a.out		//takes in values according to array value
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=10gb
+#SBATCH --time=1-00:00:00		    //4 days in burst cluster
+#SBATCH --array=1-50			    //array script
+
+echo $SLURM_ARRAY_TASK_ID
+
+///////////////////////////////////////////
+show status of jobs command
+///////////////////////////////////////////
+squeue -u ddolem                    //show status of jobs
+/usr/bin/time -v                    //will show time job took to run in log file
+/////////////
+
+//Notes from Nov 13, 2020
+task: update code to allow for changed bounds
+task: allow R script to run within C++
+---want to optimize precision---
+FOR CLUSTERING
+kmers       4 & 5
+dValue      1  to 15
+LIC         LIC 10000 flat  //OLD: LIC  5000  to 70000
+cluster     200 to 1600     (every 200)
+
+FOR COMET
+kmers       4 & 5 & 6
+dValue      1   to 20
+LIC         LIC 10000 flat  //OLD: LIC  5000  to 70000
+cluster     200 to 1600     (every 200)
+
+
+From Christina Boucher to Everyone:  02:10 PM
+https://www.codeproject.com/Questions/1192515/I-want-to-run-R-script-from-Cplusplus-code
+From Me to Everyone:  02:21 PM
+https://docs.google.com/spreadsheets/d/1EfJtrE3w0tHSnHufkjSCYooq2sBJxNWoAj7OUFyuKTM/edit?usp=sharing
+From Kingshuk, UF to Everyone:  02:35 PM
+Valouev alignment
+From Christina Boucher to Everyone:  02:39 PM
+https://en.wikipedia.org/wiki/Sequence_alignment
+https://www.youtube.com/watch?v=mGVWYT-WBn0
+https://academic.oup.com/gigascience/article/7/6/giy061/5005021
+From Kingshuk, UF to Everyone:  02:39 PM
+https://academic.oup.com/gigascience/article/7/6/giy061/5005021
+From Kingshuk, UF to Everyone:  03:03 PM
+https://academic.oup.com/bioinformatics/article/36/3/682/5559485
+https://github.com/LeenaSalmela/Elmeri.
